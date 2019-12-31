@@ -9,7 +9,7 @@ class App extends Component {
         this.state = {
             tasks: [],
             isLoading: true,
-            lastID: 0,
+            lastID: null,
             changedID: null
         };
         this.remove = this.remove.bind(this);
@@ -21,19 +21,19 @@ class App extends Component {
     }
 
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({isLoading: true});
-        fetch('/tasks')
+        await fetch('/tasks')
             .then(response => response.json())
             .then(data => this.setState({
-                tasks: data,
-                isLoading: false,
+                tasks: data
             }));
-        fetch('/lastID')
+        await fetch('/lastID')
             .then(response => response.json())
             .then(id => this.setState({
                 lastID: id,
             }));
+        this.setState({isLoading: false});
     }
 
 
@@ -130,7 +130,7 @@ class App extends Component {
                 <td style={{whiteSpace: 'nowrap'}}>
                     <div>
                         {this.state.changedID === task.id ? (
-                            <input type="text" class="form-control" onKeyPress={this.handleEnter} autoFocus/>
+                            <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
                         ) : (
                             <Button color={this.pickColor(task.changed)} size="lg"
                                     onDoubleClick={() => this.handleClick(task.id)}>{task.topic}</Button>
@@ -146,18 +146,18 @@ class App extends Component {
         return (
             <div>
                 <Container fluid>
-                    <p></p>
+                    <p/>
                     <h3> My tasks </h3>
-                    <p></p>
+                    <p/>
                     <div className="float-left">
                         <ButtonGroup>
                             <Button size="lg" color="success" onClick={this.addTask}>Add task</Button>
                             <Button size="lg" color="info" onClick={this.saveAll}>Save all</Button>
                         </ButtonGroup>
-                        <p></p>
+                        <p/>
                     </div>
                     <Table className="table">
-                        <thead class="thead-dark">
+                        <thead className="thead-dark">
                         <tr>
                             <th width="90%"> Topic</th>
                             <th width="10%"> Action</th>

@@ -22,7 +22,7 @@ public class Task implements Serializable {
     @Id
     private Long id;
 
-    @Size(min = 1, max = 128)
+    @Size(min = 1, max = 255)
     @Column(name = "topic")
     private String topic;
 
