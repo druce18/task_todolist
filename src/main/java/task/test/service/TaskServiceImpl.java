@@ -21,12 +21,13 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        lastID = 0L;
+        this.lastID = 0L;
     }
 
     @Override
     public void save(List<TaskItem> taskItems) {
         taskItems.stream()
+                .filter(taskItem -> !taskItem.getTopic().isEmpty())
                 .sorted(Comparator.comparingLong(TaskItem::getId))
                 .map(taskItem -> {
                     Task task = new Task();
@@ -42,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.findAll();
         List<TaskItem> taskItems = new ArrayList<>();
         if (!tasks.isEmpty()) {
-            taskItems = taskRepository.findAll()
+            taskItems = tasks
                     .stream()
                     .map(task -> {
                         TaskItem taskItem = new TaskItem();
