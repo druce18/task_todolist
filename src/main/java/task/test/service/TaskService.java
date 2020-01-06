@@ -12,6 +12,4 @@ public interface TaskService {
 
     void deleteById(Long id);
 
-    Long getLastID();
-
 }

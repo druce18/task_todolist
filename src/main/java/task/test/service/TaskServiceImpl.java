@@ -14,14 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    private Long lastID;
-
     TaskRepository taskRepository;
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.lastID = 0L;
     }
 
     @Override
@@ -54,7 +51,6 @@ public class TaskServiceImpl implements TaskService {
                     })
                     .sorted(Comparator.comparingLong(TaskItem::getId).reversed())
                     .collect(Collectors.toList());
-            lastID = taskItems.get(0).getId();
         }
         return taskItems;
     }
@@ -66,8 +62,4 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Override
-    public Long getLastID() {
-        return lastID;
-    }
 }
