@@ -28,11 +28,12 @@ class App extends Component {
             .then(data => this.setState({
                 tasks: data
             }));
-        await fetch('/lastID')
-            .then(response => response.json())
-            .then(id => this.setState({
-                lastID: id,
-            }));
+        let tasks = [...this.state.tasks];
+        if (tasks.length !== 0) {
+            this.setState({lastID: tasks[0].id});
+        } else {
+            this.setState({lastID: 0});
+        }
         this.setState({isLoading: false});
     }
 
@@ -74,7 +75,7 @@ class App extends Component {
         this.state.lastID++;
         const task = {
             "id": this.state.lastID,
-            "topic": "enter task",
+            "topic": "enter task " + this.state.lastID,
             "changed": true
         };
         let updatedTasks = [task, ...this.state.tasks];

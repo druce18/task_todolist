@@ -35,8 +35,4 @@ public class TaskController {
         taskService.deleteById(id);
     }
 
-    @GetMapping("/lastID")
-    public Long lastID() {
-        return taskService.getLastID();
-    }
 }

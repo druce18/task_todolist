@@ -1,11 +1,9 @@
 create table task_test.tasks
 (
-    id      integer      not null
+    id    integer      not null
         constraint tasks_pk
             primary key,
-    topic   varchar(255) not null,
-    created date         not null,
-    updated date         not null
+    topic varchar(255) not null
 );
 
 alter table task_test.tasks
