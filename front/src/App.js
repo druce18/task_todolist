@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {Button, ButtonGroup, Container, Table} from 'reactstrap';
+import {Button, ButtonGroup, Container} from 'reactstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 
 class App extends Component {
@@ -9,8 +11,8 @@ class App extends Component {
         this.state = {
             tasks: [],
             isLoading: true,
-            lastID: null,
-            changedID: null
+            changedID: null,
+            lastID: null
         };
         this.remove = this.remove.bind(this);
         this.addTask = this.addTask.bind(this);
@@ -95,12 +97,12 @@ class App extends Component {
     }
 
 
-    async handleClick(id) {
+    handleClick(id) {
         this.setState({changedID: id});
     }
 
 
-    async handleEnter(event) {
+    handleEnter(event) {
         let keycode = event.keyCode ? event.keyCode : event.which;
         if (keycode === 13) {
             let updatedTasks = [...this.state.tasks]
@@ -126,51 +128,108 @@ class App extends Component {
             return <h3>Loading...</h3>;
         }
 
-        const tasksList = tasks.map(task => {
-            return <tr key={task.id}>
-                <td style={{whiteSpace: 'nowrap'}}>
-                    <div>
-                        {this.state.changedID === task.id ? (
+        const columns = [
+            {
+                dataField: "id",
+                hidden: true
+            },
+            {
+                dataField: "topic",
+                text: "Topic",
+                formatter: (cellContent, row) => {
+                    return (
+                        this.state.changedID === row.id ? (
                             <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
                         ) : (
-                            <Button color={this.pickColor(task.changed)} size="lg"
-                                    onDoubleClick={() => this.handleClick(task.id)}>{task.topic}</Button>
-                        )}
-                    </div>
-                </td>
-                <td>
-                    <Button size="lg" color="danger" onClick={() => this.remove(task.id)}>Delete</Button>
-                </td>
-            </tr>
-        });
+                            <Button color={this.pickColor(row.changed)} size="xs"
+                                    onDoubleClick={() => this.handleClick(row.id)}>{row.topic}</Button>
+                        )
+                    );
+                }
+            },
+            {
+                dataField: "",
+                text: "Action",
+                formatter: (cellContent, row) => {
+                    return (
+                        <Button size="xs" color="danger" onClick={() => this.remove(row.id)}>Delete</Button>
+                    );
+                },
+                headerStyle: (colum, colIndex) => {
+                    return {width: "5%", textAlign: "left"}
+                }
+            }
+        ];
 
         return (
             <div>
-                <Container fluid>
+                <Container>
                     <p/>
-                    <h3> My tasks </h3>
-                    <p/>
-                    <div className="float-left">
+                    <div className="float-right">
                         <ButtonGroup>
                             <Button size="lg" color="success" onClick={this.addTask}>Add task</Button>
                             <Button size="lg" color="info" onClick={this.saveAll}>Save all</Button>
                         </ButtonGroup>
                         <p/>
                     </div>
-                    <Table className="table">
-                        <thead className="thead-dark">
-                        <tr>
-                            <th width="90%"> Topic</th>
-                            <th width="10%"> Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {tasksList}
-                        </tbody>
-                    </Table>
+                    <h3> My tasks </h3>
+                    <BootstrapTable
+                        hover
+                        keyField="id"
+                        data={tasks}
+                        columns={columns}
+                        pagination={paginationFactory()}
+                    />
                 </Container>
             </div>
         );
+
+
+        // const tasksList = tasks.map(task => {
+        //     return <tr key={task.id}>
+        //         <td style={{whiteSpace: 'nowrap'}}>
+        //             <div>
+        //                 {this.state.changedID === task.id ? (
+        //                     <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
+        //                 ) : (
+        //                     <Button color={this.pickColor(task.changed)} size="lg"
+        //                             onDoubleClick={() => this.handleClick(task.id)}>{task.topic}</Button>
+        //                 )}
+        //             </div>
+        //         </td>
+        //         <td>
+        //             <Button size="lg" color="danger" onClick={() => this.remove(task.id)}>Delete</Button>
+        //         </td>
+        //     </tr>
+        // });
+        //
+        // return (
+        //     <div>
+        //         <Container fluid>
+        //             <p/>
+        //             <h3> My tasks </h3>
+        //             <p/>
+        //             <div className="float-left">
+        //                 <ButtonGroup>
+        //                     <Button size="lg" color="success" onClick={this.addTask}>Add task</Button>
+        //                     <Button size="lg" color="info" onClick={this.saveAll}>Save all</Button>
+        //                 </ButtonGroup>
+        //                 <p/>
+        //             </div>
+        //             <Table className="table">
+        //                 <thead className="thead-dark">
+        //                 <tr>
+        //                     <th width="90%"> Topic</th>
+        //                     <th width="10%"> Action</th>
+        //                 </tr>
+        //                 </thead>
+        //                 <tbody>
+        //                 {tasksList}
+        //                 </tbody>
+        //             </Table>
+        //         </Container>
+        //     </div>
+        // );
     }
 }
 
