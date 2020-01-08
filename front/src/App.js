@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, ButtonGroup, Container} from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 
 class App extends Component {
@@ -20,6 +20,8 @@ class App extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleEnter = this.handleEnter.bind(this);
         this.pickColor = this.pickColor.bind(this);
+        this.topicFormatter = this.topicFormatter.bind(this);
+        this.deleteFormatter = this.deleteFormatter.bind(this);
     }
 
 
@@ -121,45 +123,27 @@ class App extends Component {
     }
 
 
+    topicFormatter(cell, row) {
+        return (
+            this.state.changedID === row.id ? (
+                <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
+            ) : (
+                <Button color={this.pickColor(row.changed)} size="xs"
+                        onDoubleClick={() => this.handleClick(row.id)}>{row.topic}</Button>
+            ));
+    }
+
+
+    deleteFormatter(cell, row) {
+        return <Button size="xs" color="danger" onClick={() => this.remove(row.id)}>Delete</Button>;
+    }
+
     render() {
         const {tasks, isLoading} = this.state;
 
         if (isLoading) {
             return <h3>Loading...</h3>;
         }
-
-        const columns = [
-            {
-                dataField: "id",
-                hidden: true
-            },
-            {
-                dataField: "topic",
-                text: "Topic",
-                formatter: (cellContent, row) => {
-                    return (
-                        this.state.changedID === row.id ? (
-                            <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
-                        ) : (
-                            <Button color={this.pickColor(row.changed)} size="xs"
-                                    onDoubleClick={() => this.handleClick(row.id)}>{row.topic}</Button>
-                        )
-                    );
-                }
-            },
-            {
-                dataField: "",
-                text: "Action",
-                formatter: (cellContent, row) => {
-                    return (
-                        <Button size="xs" color="danger" onClick={() => this.remove(row.id)}>Delete</Button>
-                    );
-                },
-                headerStyle: (colum, colIndex) => {
-                    return {width: "5%", textAlign: "left"}
-                }
-            }
-        ];
 
         return (
             <div>
@@ -174,62 +158,18 @@ class App extends Component {
                     </div>
                     <h3> My tasks </h3>
                     <BootstrapTable
-                        hover
-                        keyField="id"
+                        hover={true}
                         data={tasks}
-                        columns={columns}
                         pagination={paginationFactory()}
-                    />
+                    >
+                        <TableHeaderColumn dataField="id" isKey={true} hidden={true}></TableHeaderColumn>
+                        <TableHeaderColumn dataField="topic" dataFormat={this.topicFormatter} >Topic</TableHeaderColumn>
+                        <TableHeaderColumn dataField="" dataFormat={this.deleteFormatter} width={'10%'}  >action</TableHeaderColumn>
+                    </BootstrapTable>
                 </Container>
             </div>
         );
 
-
-        // const tasksList = tasks.map(task => {
-        //     return <tr key={task.id}>
-        //         <td style={{whiteSpace: 'nowrap'}}>
-        //             <div>
-        //                 {this.state.changedID === task.id ? (
-        //                     <input type="text" className="form-control" onKeyPress={this.handleEnter} autoFocus/>
-        //                 ) : (
-        //                     <Button color={this.pickColor(task.changed)} size="lg"
-        //                             onDoubleClick={() => this.handleClick(task.id)}>{task.topic}</Button>
-        //                 )}
-        //             </div>
-        //         </td>
-        //         <td>
-        //             <Button size="lg" color="danger" onClick={() => this.remove(task.id)}>Delete</Button>
-        //         </td>
-        //     </tr>
-        // });
-        //
-        // return (
-        //     <div>
-        //         <Container fluid>
-        //             <p/>
-        //             <h3> My tasks </h3>
-        //             <p/>
-        //             <div className="float-left">
-        //                 <ButtonGroup>
-        //                     <Button size="lg" color="success" onClick={this.addTask}>Add task</Button>
-        //                     <Button size="lg" color="info" onClick={this.saveAll}>Save all</Button>
-        //                 </ButtonGroup>
-        //                 <p/>
-        //             </div>
-        //             <Table className="table">
-        //                 <thead className="thead-dark">
-        //                 <tr>
-        //                     <th width="90%"> Topic</th>
-        //                     <th width="10%"> Action</th>
-        //                 </tr>
-        //                 </thead>
-        //                 <tbody>
-        //                 {tasksList}
-        //                 </tbody>
-        //             </Table>
-        //         </Container>
-        //     </div>
-        // );
     }
 }
 
