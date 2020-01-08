@@ -163,8 +163,8 @@ class App extends Component {
                         pagination={paginationFactory()}
                     >
                         <TableHeaderColumn dataField="id" isKey={true} hidden={true}></TableHeaderColumn>
-                        <TableHeaderColumn dataField="topic" dataFormat={this.topicFormatter} >Topic</TableHeaderColumn>
-                        <TableHeaderColumn dataField="" dataFormat={this.deleteFormatter} width={'10%'}  >action</TableHeaderColumn>
+                        <TableHeaderColumn dataField="topic" dataFormat={this.topicFormatter}>Topic</TableHeaderColumn>
+                        <TableHeaderColumn dataField="" dataFormat={this.deleteFormatter} width={'9%'}>Action</TableHeaderColumn>
                     </BootstrapTable>
                 </Container>
             </div>
